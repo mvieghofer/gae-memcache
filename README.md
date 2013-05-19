@@ -1,7 +1,6 @@
 Purpose of this project
 =======================
-This project was created to show how the Google App Engine memcache service can be used to enhance a Google App Engine app.
-To be specific the project should show how the memcache service can minimize the runtime and the costs of an Google App 
+This project was created to show how the Google App Engine memcache service can be used to enhance a Google App Engine app. To be specific the project should show how the memcache service can minimize the runtime and the costs of an Google App 
 Engine app.
 
 Applications
@@ -22,11 +21,16 @@ Since the updates appear this quickely it is assumed that it does not matter if 
 
 OHLC Charts
 -----------
-When larger sets of data should be displayed it will probably take some time to load this data. If the data does not change
-over time, it is possible to save this data in the memcache. By doing this it will take less time to load the data.
+When larger sets of data should be displayed it will probably take some time to load this data. If the data does not change over time, it is possible to save this data in the memcache. By doing this it will take less time to load the data.
  
 Sport Betting App
 -----------------
 This application simulates a sport betting portal. It is assumed that there is one big event that most of the people are
 interested in. The application tests how long it takes until all users get only cached results. Since the data is static,
 i.e. it will not change over time, the results can be cached without taking the risk of presenting obsolete data.
+
+Authors
+=======
+Joseph Helm (joseph.n.helm@gmail.com)
+
+Markus Vieghofer (markus.vieghofer@gmail.com)
