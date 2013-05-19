@@ -1,0 +1,102 @@
+<?xml version="1.0" encoding="utf-8" standalone="no"?><web-app xmlns="http://java.sun.com/xml/ns/javaee" xmlns:web="http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" version="2.5" xsi:schemaLocation="http://java.sun.com/xml/ns/javaee  http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd">
+
+	<display-name>JavaServerFaces</display-name>
+
+	<!-- GAE 1.6.3 cannot handle server side (JSF default) state management. -->
+	<context-param>
+		<param-name>javax.faces.STATE_SAVING_METHOD</param-name>
+		<param-value>client</param-value>
+	</context-param>
+
+
+	<!-- Change to "Production" when you are ready to deploy -->
+	<context-param>
+		<param-name>javax.faces.PROJECT_STAGE</param-name>
+		<param-value>Development</param-value>
+	</context-param>
+
+	<!-- Welcome page -->
+	<welcome-file-list>
+		<welcome-file>faces/mainPage.xhtml</welcome-file>
+	</welcome-file-list>
+
+	<!-- JSF mapping -->
+	<servlet>
+		<servlet-name>Faces Servlet</servlet-name>
+		<servlet-class>javax.faces.webapp.FacesServlet</servlet-class>
+		<load-on-startup>1</load-on-startup>
+	</servlet>
+	<servlet>
+		<servlet-name>Standard Quote Task Worker</servlet-name>
+		<servlet-class>com.clc3.worker.AddQuoteTaskWorker</servlet-class>
+	</servlet>
+    <servlet>
+        <servlet-name>HFT Quote Task Worker</servlet-name>
+        <servlet-class>com.clc3.worker.AddQuoteTaskWorker</servlet-class>
+    </servlet>
+	<servlet>
+        <servlet-name>Stop Adding Quotes</servlet-name>
+        <servlet-class>com.clc3.worker.StopAddingQuotesTaskWorker</servlet-class>
+	
+	</servlet>
+
+	<!-- Map these files with JSF -->
+	<servlet-mapping>
+		<servlet-name>Faces Servlet</servlet-name>
+		<url-pattern>/faces/*</url-pattern>
+	</servlet-mapping>
+	<servlet-mapping>
+		<servlet-name>Faces Servlet</servlet-name>
+		<url-pattern>*.jsf</url-pattern>
+	</servlet-mapping>
+	<servlet-mapping>
+		<servlet-name>Faces Servlet</servlet-name>
+		<url-pattern>*.faces</url-pattern>
+	</servlet-mapping>
+	<servlet-mapping>
+		<servlet-name>Faces Servlet</servlet-name>
+		<url-pattern>*.xhtml</url-pattern>
+	</servlet-mapping>
+	<servlet-mapping>
+		<servlet-name>Standard Quote Task Worker</servlet-name>
+		<url-pattern>/addQuote</url-pattern>
+	</servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>HFT Quote Task Worker</servlet-name>
+        <url-pattern>/addQuoteHFT</url-pattern>
+    </servlet-mapping>
+	<servlet-mapping>
+		<servlet-name>Stop Adding Quotes</servlet-name>
+		<url-pattern>/stopAddingQuotes</url-pattern>
+	</servlet-mapping>
+
+	<!-- GAE BugFix BEGIN -->
+	<filter>
+		<display-name>AppEngine Bug 8145 Work Around</display-name>
+		<description>
+      Suppresses the If Modified Since header until GAE bug 8145 is fixed.
+      </description>
+		<filter-name>GAEBug8145WorkAround</filter-name>
+		<filter-class>com.clc3.gae.bugfix.HttpIfModifiedSinceFix</filter-class>
+	</filter>
+
+
+	<filter-mapping>
+		<filter-name>GAEBug8145WorkAround</filter-name>
+		<url-pattern>/*</url-pattern>
+	</filter-mapping>
+	<!-- GAE BugFix END -->
+
+	<servlet>
+		<servlet-name>SystemServiceServlet</servlet-name>
+		<servlet-class>com.google.api.server.spi.SystemServiceServlet</servlet-class>
+		<init-param>
+			<param-name>services</param-name>
+			<param-value/>
+		</init-param>
+	</servlet>
+	<servlet-mapping>
+		<servlet-name>SystemServiceServlet</servlet-name>
+		<url-pattern>/_ah/spi/*</url-pattern>
+	</servlet-mapping>
+</web-app>

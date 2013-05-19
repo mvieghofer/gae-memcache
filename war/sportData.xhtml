@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" 
+"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:p="http://primefaces.org/ui">
+
+<h:head>
+	<title>Sport Betting Portal</title>
+</h:head>
+<h:body>
+	<ui:composition>
+		<h1>Sport Betting Portal</h1>
+		<div style="padding-bottom: 25px">This app shows how an app providing static data can be improved concerning database requests and speed. When you 'simulate requests' the number of configured requests will be sent. There is always one main event, that is requested with a probability of 50%. You can also start an extreme Test. This test will simulate requests, such as the 'simulate request' button, but in a loop that stops when the number of elements read from the cache is over 95% per iteration or 100 iterations are reached. After that two graphs will be displayed. One shows the runtime of each round of requests (with and withouth caching), the other shows how many percent of elements were read from the cache.</div>
+		<h:form>
+			<p:commandButton value="List Sport Results" immediate="true"
+				update="@form">
+				<f:setPropertyActionListener target="#{sportDataBean.method}"
+					value="list" />
+			</p:commandButton>
+			<p:commandButton value="Send Requests" immediate="true"
+				update="@form, :metadataForm"
+				actionListener="#{sportDataBean.normalTest}">
+				<f:setPropertyActionListener target="#{sportDataBean.method}"
+					value="requests" />
+			</p:commandButton>
+
+			<p:commandButton value="Start Extreme Test" immediate="true"
+				update="@form, :metadataForm"
+				actionListener="#{sportDataBean.extremeTest}">
+				<f:setPropertyActionListener target="#{sportDataBean.method}"
+					value="charts" />
+			</p:commandButton>
+
+			<h:panelGrid columns="4" style="margin-bottom:10px" cellpadding="5">
+				<h:outputText value="Number of Requests: " />
+				<h:panelGrid columns="1" style="margin-bottom:10px">
+					<p:inputText id="txtRequests"
+						value="#{sportDataBean.numberOfRequests}" />
+					<p:slider for="txtRequests" maxValue="1500" />
+				</h:panelGrid>
+			</h:panelGrid>
+
+
+
+			<p:panel id="panel" header="Action: #{sportDataBean.method}"
+				rendered="#{sportDataBean.method != ''}">
+				<h:outputText style="margin-bottom: 10px;"
+					value="Currently there are #{sportDataBean.numberDebugData} entries in the database." />
+				<br />
+				<p:dataList value="#{sportDataBean.allResults}" var="result"
+					type="ordered" rendered="#{sportDataBean.method == 'list'}">
+	                #{result.team1} vs. #{result.team2} (#{result.result})
+	            </p:dataList>
+				<h:panelGroup rendered="#{sportDataBean.method == 'requests'}">
+					<h:outputLabel
+						value="Number of simulated requests: #{sportDataBean.nrSimulatedRequests}." />
+					<br />
+					<h:outputLabel
+						value="Percent of cached Elements: #{metadataBean.percentCached}%." />
+					<br />
+					<h:outputLabel
+						value="Number of time the Main Event was requested: #{sportDataBean.nrMainEventKey} (#{(100 / metadataBean.requestDataSize) * sportDataBean.nrMainEventKey}%)." />
+					<br />
+				</h:panelGroup>
+				<p:panel rendered="#{sportDataBean.method == 'charts'}">
+					<p:lineChart id="runtimeChart"
+						rendered="#{not empty sportDataBean.runtimeNoCachingCs or not empty sportDataBean.runtimeCachingCs}"
+						value="#{sportDataBean.runtimeModel}" legendPosition="e"
+						title="Runtime of Requests" minY="#{sportDataBean.minRuntime}"
+						maxY="#{sportDataBean.maxRuntime}" style="height:300px"
+						xaxisLabel="Iteration" yaxisLabel="Runtime" />
+					<p:lineChart id="cachingChart"
+						rendered="#{not empty sportDataBean.cachingCs}"
+						value="#{sportDataBean.cachingModel}" legendPosition="e"
+						title="Percent of elements cached" minY="0" maxY="100"
+						style="height:300px" 
+						xaxisLabel="Iteration" yaxisLabel="% Cached" />
+				</p:panel>
+			</p:panel>
+		</h:form>
+	</ui:composition>
+</h:body>
+</html>

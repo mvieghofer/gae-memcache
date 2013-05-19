@@ -1,0 +1,30 @@
+<!DOCTYPE html
+PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+        xmlns:s="http://jboss.com/products/seam/taglib"
+        xmlns:h="http://java.sun.com/jsf/html"
+        xmlns:f="http://java.sun.com/jsf/core"
+        xmlns:ui="http://java.sun.com/jsf/facelets"
+        xmlns:p="http://primefaces.org/ui"
+        template="/WEB-INF/templates/default.xhtml"
+        xmlns:comp="http://java.sun.com/jsf/composite/component">
+        <ui:define name="content">
+
+                <p:tabView id="tabView" style="margin:20px;" rendered="#{quoteStatisticBean.dbHasEntries}">
+                        <p:tab id="quoteStatisticTab" title="Quote Statistics">
+                                <ui:include src="quoteStatistic.xhtml" />
+                        </p:tab>
+                        <p:tab id="sportDataTab" title="Sport Data Tool">
+                                <ui:include src="sportData.xhtml" />
+                        </p:tab>
+                        <p:tab id="hftTab" title="High Frequecy Trading Tool">
+                                <ui:include src="hft.xhtml" />
+                        </p:tab>
+                </p:tabView>
+                
+                <h:panelGroup layout="block" rendered="#{not quoteStatisticBean.dbHasEntries}" style="padding: 25px; background-color:#FFFFFF">To start using this application you have to create a test database first. Click the button "Create Quote DB". This process may take some seconds..</h:panelGroup>
+		
+                
+        </ui:define>
+</ui:composition>

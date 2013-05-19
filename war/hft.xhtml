@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" 
+"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:p="http://primefaces.org/ui">
+
+<h:head>
+	<title>High Frequency Trading Tool</title>
+</h:head>
+<h:body>
+	<ui:composition>
+		<h:form>
+			<h1>High Frequency Trading Tool</h1>
+			<div style="padding-bottom: 25px">This tool shows how the memcache service can be used to eliminate database requests for highly dynamic data. When you start the trading simulation every second a 'normal' quote and every 20 ms a HFT quote will be generated for each stock. Also two charts will be generated, one that shows the trading process when you turn off caching and one with caching turned on. If one of this charts has no data it will not be displayed until data is available. On the chart every generated quote is displayed. If the quote is cached only, it has the value 0. If it is saved to the database it has the value 1.</div>
+			<p:messages id="messages" showDetail="true" autoUpdate="true"
+				closable="true" />
+			<h:panelGrid columns="5" style="margin-bottom:10px" cellpadding="5">
+
+
+				<p:commandButton value="Start Trading" immediate="true"
+					update="@form" actionListener="#{hftBean.startTrading}" />
+				<p:commandButton value="Stop Trading" immediate="true"
+					update="@form" actionListener="#{hftBean.stopTrading}" />
+				<p:commandButton value="Refresh" update="@form" />
+				<p:commandButton value="Clear" update="@form"
+					actionListener="#{metadataBean.cleanup}" />
+			</h:panelGrid>
+
+
+			<p:lineChart id="chartNoCache" value="#{hftBean.noCacheModel}"
+				rendered="#{not empty metadataBean.hftDataNoCaching}"
+				legendPosition="ne" stacked="true" fill="true" title="No Cache Used"
+				xaxisLabel="Quotes" yaxisLabel="Not Cached" />
+			<p:lineChart id="chartCache" value="#{hftBean.cacheModel}"
+				rendered="#{not empty metadataBean.hftDataCaching}"
+				legendPosition="ne" stacked="true" fill="true" title="Cache Used"
+				xaxisLabel="Quotes" yaxisLabel="Not Cached" />
+			<!-- Extrapolation der Werte nach drücken der Stop Taste = Wieviel Geld spart man? bzw Welche Kosten entstehen? -->
+			<p:poll id="chartPoll" interval="1" update="@form, :metadataForm" rendered="#{hftBean.chartPolling}" global="false" />
+		</h:form>
+	</ui:composition>
+
+</h:body>
+</html>

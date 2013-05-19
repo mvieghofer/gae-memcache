@@ -1,0 +1,110 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" 
+"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:p="http://primefaces.org/ui">
+
+<h:head>
+	<title>Quote Statistic Tool</title>
+</h:head>
+<h:body>
+	<ui:composition>
+		<h1>Quote Statistic Tool</h1>
+		
+		<div style="padding-bottom: 25px">This app works with the created Quote DB. You can create charts for each stock for each year or for one year and all stocks. The second option is of course the operation that needs more database reads. If you take a look at the metadata dialog, you will notice that there is a huge speedup when caching is used. Also the number of database reads is minimized to 0!</div>
+		<p:accordionPanel id="accordionPanel" multiple="false">
+			<p:tab title="Stock Table">
+				<h:panelGroup id="stockTableGroup" layout="block">
+					<h:form id="stockTableForm">
+						<p:dataTable id="stockTable" var="stock" style="width: 500px;"
+							value="#{quoteStatisticBean.stocks}">
+							<p:column headerText="Symbol">
+								<h:outputText value="#{stock.symbol}" />
+							</p:column>
+							<p:column headerText="Name">
+								<h:outputText value="#{stock.name}" />
+							</p:column>
+							<p:column headerText="Currency">
+								<h:outputText value="#{stock.currency}" />
+							</p:column>
+						</p:dataTable>
+
+						<p:messages id="messages" showDetail="true" autoUpdate="true"
+							closable="true" />
+					</h:form>
+				</h:panelGroup>
+			</p:tab>
+			<p:tab title="Ohlc chart">
+				<table style="min-width: 980px">
+					<tr>
+						<td><h:panelGroup id="ohlcChartGroup" layout="block">
+								<h:form id="ohlcChartForm">
+
+									<p:ohlcChart id="ohlcChart"
+										value="#{quoteStatisticBean.ohlcModel}" candleStick="true"
+										yaxisLabel="Value" xaxisLabel="Month"
+										title="Ohlc for current stock"
+										style="width:400px;height:300px" />
+
+									<h:panelGrid id="ohlcControlTable" columns="3">
+										<p:selectOneMenu id="selectStock"
+											value="#{quoteStatisticBean.selectedStockSymbol}">
+											<f:selectItems value="#{quoteStatisticBean.stocks}"
+												var="stock" itemLabel="#{stock.symbol}"
+												itemValue="#{stock.symbol}" />
+										</p:selectOneMenu>
+
+										<p:selectOneMenu id="selectYear"
+											value="#{quoteStatisticBean.selectedYear}">
+											<f:selectItems value="#{quoteStatisticBean.possibleYears}"
+												var="year" />
+										</p:selectOneMenu>
+
+										<p:commandButton id="refreshOhlcChartBtn" value="Load"
+											update="@form, :metadataForm" />
+									</h:panelGrid>
+								</h:form>
+							</h:panelGroup></td>
+						<td><h:panelGroup id="ohlcChartAllGroup" layout="block">
+								<h:form id="ohlcChartAllForm">
+									<table>
+										<tr>
+											<td><p:ohlcChart id="ohlcChartAll"
+													value="#{quoteStatisticBean.allStocksOhlcModel}"
+													candleStick="true" yaxisLabel="Value" xaxisLabel="Stock"
+													title="Ohlc for all stocks"
+													style="width:400px;height:300px" /></td>
+											<td>
+												<ul>
+													<ui:repeat value="#{quoteStatisticBean.stocksForLegend}"
+														var="stock">
+														<li><h:outputText value="#{stock}" /></li>
+													</ui:repeat>
+												</ul>
+											</td>
+										</tr>
+									</table>
+
+									<h:panelGrid id="ohlcAllControlTable" columns="2">
+
+										<p:selectOneMenu id="selectYearForAll"
+											value="#{quoteStatisticBean.selectedYearForAll}">
+											<f:selectItems value="#{quoteStatisticBean.possibleYears}"
+												var="year" />
+										</p:selectOneMenu>
+
+										<p:commandButton id="refreshOhlcChartAllBtn" value="Load"
+											update="@form, :metadataForm" />
+									</h:panelGrid>
+								</h:form>
+							</h:panelGroup></td>
+					</tr>
+				</table>
+			</p:tab>
+		</p:accordionPanel>
+	</ui:composition>
+</h:body>
+</html>

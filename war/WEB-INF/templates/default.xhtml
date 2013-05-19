@@ -1,0 +1,98 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui">
+<h:head>
+	<title>GAE Caching</title>
+	<!-- <meta http-equiv="Content-Type" content="text/html; charset=utf-8" /> -->
+	<h:outputStylesheet name="css/main.css" />
+</h:head>
+<h:body>
+	<div id="container">
+
+		<p:ajaxStatus onstart="statusDialog.show();"
+			onsuccess="statusDialog.hide();" />
+		<p:dialog modal="true" widgetVar="statusDialog" header="Loading..."
+			draggable="false" closable="false" resizable="false">
+			<div align="center">
+				<p:graphicImage value="images/ajax-loader.gif" />
+			</div>
+		</p:dialog>
+		<h:outputStylesheet library="css" name="main.css" />
+
+
+
+		
+		<table id="pageHeader" style="min-width: 585px">	
+			<tr>
+				<td style="width: 80px;">
+					<img src="images/logo.jpg" style="height: 80px;" />
+				</td>
+				
+				<td>
+					<h:outputText value="GAE Caching"
+						style="font-size: 50px; margin-left: 20px; margin-right: 20px;" />
+				</td>
+
+				<td style="width: 180px;">
+					<h:form id="metadataButonPanelForm">
+						<h:panelGrid columns="2">
+							<p:commandButton id="createQuoteDBBtn" value="Create Quote DB" enabled="#{quoteStatisticBean.dbHasEntries}"
+									actionListener="#{quoteStatisticBean.createInitialDataBase}"
+									update=":tabView" style="width: 170px" />
+							<p:commandButton id="cleanupMetadataAndCacheBtn" value="Clear MD + C" 
+									actionListener="#{metadataBean.cleanupAndClearCache}" 
+									update=":metadataForm" style="width: 170px" /> 
+							<p:commandButton id="clearCacheBtn" value="Clear Cache" 
+									actionListener="#{metadataBean.clearCache}" 
+									update=":metadataForm" style="width: 170px" /> 
+							<p:commandButton id="cleanupMetadataBtn" value="Clear Metadata" 
+									actionListener="#{metadataBean.cleanup}" 
+									update=":metadataForm" style="width: 170px" /> 
+						
+							<p:selectBooleanButton id="cachingEnabledButton" value="#{metadataBean.cachingEnabled}" 
+								onLabel="Caching Enabled" offLabel="Caching Disabled" style="width: 170px" >
+								<p:ajax process="@form" update="@form" />
+							</p:selectBooleanButton>
+							
+							<p:commandButton id="metadataBtn" value="Metadata" type="button" onclick="metadataDlg.show()" style="width: 170px" /> 
+						</h:panelGrid>
+					</h:form>
+				</td>
+			</tr>
+		</table>
+
+		<h:panelGroup id="pageContent" layout="block">
+			<ui:insert name="content">
+                [Template content will be inserted here]
+            </ui:insert>
+		</h:panelGroup>
+
+		<h:panelGroup id="pageFooter">
+			<h:outputLabel
+				value="Testapplikation - Joseph Helm, Markus Vieghofer"
+				style="color: #BBBBBB; font-size: 20px; margin-left: 20px; margin-right: 20px;" />
+		</h:panelGroup>
+
+	</div>
+	
+	
+	
+	
+	<p:dialog header="Metadata" widgetVar="metadataDlg" resizable="false">  
+	    <h:form id="metadataForm">
+	    	<h:panelGrid columns="2" columnClasses="metadataCol1, metadataCol2" >
+	    		<h:panelGroup>Last Method Called:</h:panelGroup><h:panelGroup>#{metadataBean.lastCalledMethod}</h:panelGroup>
+				<h:panelGroup>Elapsed Time:</h:panelGroup><h:panelGroup>#{metadataBean.totalTimeElapsed}</h:panelGroup>
+				<h:panelGroup>Nr of Cached Items:</h:panelGroup><h:panelGroup>#{metadataBean.nrOfCachedItems}</h:panelGroup>
+				<h:panelGroup>Hits:</h:panelGroup><h:panelGroup>#{metadataBean.cacheHits}</h:panelGroup>
+				<h:panelGroup>Misses:</h:panelGroup><h:panelGroup>#{metadataBean.cacheMisses}</h:panelGroup>
+				<h:panelGroup>Nr of DS Reads:</h:panelGroup><h:panelGroup>#{metadataBean.totalNrOfDSReads}</h:panelGroup>
+			</h:panelGrid>  
+	    </h:form>  
+	</p:dialog> 
+</h:body>
+</html>
